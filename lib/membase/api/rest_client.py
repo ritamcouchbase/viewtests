@@ -480,10 +480,10 @@ class RestConnection(object):
         if isinstance(bucket, Bucket):
             api = '%s/%s/%s' % (self.capiBaseUrl, bucket.name, design_doc_name)
 
-        if isinstance(bucket, Bucket) and bucket.authType == "sasl":
+        if isinstance(bucket, Bucket) and bucket.name != "default":
             status, content, header = self._http_request(api, 'PUT', str(design_doc),
                                                 headers=self._create_capi_headers_with_auth(
-                                                username=bucket.name, password=bucket.saslPassword))
+                                                username="cbadminbucket",password="password"))
         else:
             status, content, header = self._http_request(api, 'PUT', str(design_doc),
                                                  headers=self._create_capi_headers())
@@ -538,9 +538,9 @@ class RestConnection(object):
                                                   view_name,
                                                   urllib.urlencode(query))
         log.info("index query url: {0}".format(api))
-        if isinstance(bucket, Bucket) and bucket.authType == "sasl":
+        if isinstance(bucket, Bucket) and bucket.name != "default":
             status, content, header = self._http_request(api, headers=self._create_capi_headers_with_auth(
-                                                username=bucket.name, password=bucket.saslPassword),
+                                        "cbadminbucket", password="password"),
                                                 timeout=timeout)
         else:
             status, content, header = self._http_request(api, headers=self._create_capi_headers(),
@@ -676,9 +676,9 @@ class RestConnection(object):
         if isinstance(bucket, Bucket):
             api = self.capiBaseUrl + '/%s/_design/%s' % (bucket.name, name)
 
-        if isinstance(bucket, Bucket) and bucket.authType == "sasl" and bucket.name != "default":
+        if isinstance(bucket, Bucket) and bucket.name != "default":
             status, content, header = self._http_request(api, headers=self._create_capi_headers_with_auth(
-                                                username=bucket.name, password=bucket.saslPassword))
+                                                username="cbadminbucket", password="password"))
         else:
             status, content, header = self._http_request(api, headers=self._create_capi_headers())
         json_parsed = json.loads(content)
@@ -701,9 +701,9 @@ class RestConnection(object):
         api = self.capiBaseUrl + '/%s/_design/%s' % (bucket, name)
         if isinstance(bucket, Bucket):
             api = self.capiBaseUrl + '/%s/_design/%s' % (bucket.name, name)
-        if isinstance(bucket, Bucket) and bucket.authType == "sasl" and bucket.name != "default":
+        if isinstance(bucket, Bucket) and bucket.name != "default":
             status, content, header = self._http_request(api, 'DELETE', headers=self._create_capi_headers_with_auth(
-                                                username=bucket.name, password=bucket.saslPassword))
+                                                username="cbadminbucket", password="password"))
         else:
             status, content, header = self._http_request(api, 'DELETE', headers=self._create_capi_headers())
         json_parsed = json.loads(content)
